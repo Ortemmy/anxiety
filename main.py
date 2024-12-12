@@ -1,16 +1,22 @@
 from fastapi import FastAPI
 from pydantic import BaseModel
+from fastapi.middleware.cors import CORSMiddleware
 
-# Создаём приложение FastAPI
 app = FastAPI()
 
-# Модель данных, которая будет использоваться для запросов
+# Настройка CORS
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # Здесь можно указать конкретные домены, если нужно
+    allow_credentials=True,
+    allow_methods=["*"],  # Разрешить все HTTP методы
+    allow_headers=["*"],  # Разрешить все заголовки
+)
+
 class Message(BaseModel):
     text: str
 
-# Маршрут API
 @app.post("/analyze")
 def analyze(message: Message):
-    # Простая логика анализа (замените на вызов вашей модели)
-    anxiety_score = len(message.text) % 10  # Пример: длина текста влияет на "оценку"
+    anxiety_score = len(message.text) % 10
     return {"anxiety_score": anxiety_score}
